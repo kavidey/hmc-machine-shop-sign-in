@@ -7,7 +7,7 @@ import atexit
 SPREADSHEET_KEY = "1A8TFqMOBUln6dfEy161x9mih8hKJ_k4BwR_mRlUH0yo"  # the key in the url of the spreadsheet
 ID_WORKSHEET_NAME = "Raw"  # the name of the worksheet in the spreadsheet
 LOG_WORKSHEET_NAME = "Log"
-SERVICE_FILE = "C:/Users/Proctor/Sign-In-2.0/service_file.json"  # filename of client secret
+SERVICE_FILE = "service_file.json"  # filename of client secret
 
 
 def get_google_sheet():
