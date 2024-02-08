@@ -1,13 +1,17 @@
 # imports and stuff
 import pygsheets
 import datetime
+import dateutil.parser
 import atexit
 
 # defining constants and stuff
-SPREADSHEET_KEY = "1A8TFqMOBUln6dfEy161x9mih8hKJ_k4BwR_mRlUH0yo"  # the key in the url of the spreadsheet
+SPREADSHEET_KEY = "1wsgUJq9N3m3OEQtRQ08um80dt9giS_gtsw3J_wKfm-4"  # the key in the url of the spreadsheet
 ID_WORKSHEET_NAME = "Raw"  # the name of the worksheet in the spreadsheet
 LOG_WORKSHEET_NAME = "Log"
-SERVICE_FILE = "service_file.json"  # filename of client secret
+SERVICE_FILE = "service_file.shop.json"  # filename of client secret
+
+DATE_COL = 1
+ID_COL = 3
 
 
 def get_google_sheet():
@@ -32,8 +36,9 @@ def check_user_id(userID, data):
 
     for row in data:
         # the ID values of registered shop users are in the fourth column of the spreadsheet
-        if row[3] == userID:
-            return True, row[0]
+        if row[ID_COL] == userID:
+            if dateutil.parser.parse(row[DATE_COL]) > datetime.datetime.now()-datetime.timedelta(days=365):
+                return True, row[0]
     return False, None
 
 
