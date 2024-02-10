@@ -5,13 +5,19 @@ import dateutil.parser
 import atexit
 
 # defining constants and stuff
-SPREADSHEET_KEY = "1wsgUJq9N3m3OEQtRQ08um80dt9giS_gtsw3J_wKfm-4"  # the key in the url of the spreadsheet
-ID_WORKSHEET_NAME = "Raw"  # the name of the worksheet in the spreadsheet
-LOG_WORKSHEET_NAME = "Log"
-SERVICE_FILE = "service_file.shop.json"  # filename of client secret
+SPREADSHEET_KEY = "1tbupPMYpxyRwSO7UIOGVxNreyMRhvirPiG8QTPskf4w"  # the key in the url of the spreadsheet
+ID_WORKSHEET_NAME = "Form Responses 1"  # the name of the worksheet in the spreadsheet
+LOG_WORKSHEET_NAME = "Log" # This is unused
+SERVICE_FILE = "service_file.json"  # filename of client secret
 
-DATE_COL = 1
-ID_COL = 3
+# Spreadsheet Column Mappings
+DATE_COL = 0
+SCORE_COL = 2
+NAME_COL = 4
+ID_COL = 5
+
+# Minimum Passing Score (must be >= 60)
+MIN_PASSING_SCORE = 60
 
 
 def get_google_sheet():
@@ -33,12 +39,19 @@ def check_user_id(userID, data):
     :param data: 2d array representing the datasheet
     :return: boolean value stating if userID is in data
     """
-
-    for row in data:
-        # the ID values of registered shop users are in the fourth column of the spreadsheet
-        if row[ID_COL] == userID:
-            if dateutil.parser.parse(row[DATE_COL]) > datetime.datetime.now()-datetime.timedelta(days=365):
-                return True, row[0]
+    # Scan all rows except for the first 3 which are header rows
+    for row in data[3:]:
+        # Check if the row matches the user
+        if row[ID_COL] and (row[ID_COL] in userID):
+            # Calculate what the user stored on the quiz
+            # row[SCORE_COL] is a string in the form "XX / 64"
+            # We split it into ["XX", "/", "64"], then get the first item: "XX" and convert that into an integer
+            quiz_score = int(row[SCORE_COL].split()[0])
+            # Check if the user passed the quiz
+            if quiz_score >= MIN_PASSING_SCORE:
+                # Check if the date that the user passed the quiz is within the last year
+                if dateutil.parser.parse(row[DATE_COL]) > datetime.datetime.now()-datetime.timedelta(days=365):
+                    return True, row[NAME_COL]
     return False, None
 
 
