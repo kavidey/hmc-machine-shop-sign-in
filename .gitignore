@@ -1,3 +1,4 @@
 service_file.json
 __pycache__
 .DS_Store
+logs
