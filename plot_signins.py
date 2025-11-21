@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 
 import matplotlib.pyplot as plt
+import calplot
 # %%
 swipes_file = Path("logs/swipes.txt")
 # %%
@@ -17,6 +18,10 @@ swipes = list(map(lambda d: datetime.strptime(d, "%Y-%m-%d %H:%M:%S\n"), content
 df = pd.DataFrame({"date": swipes})
 df['weekday'] = df['date'].dt.weekday
 df['hour'] = df['date'].dt.hour
+
+df['day-without-hour'] = df['date'].dt.strftime("%Y-%m-%d")
+df['day-without-hour'] = pd.to_datetime(df['day-without-hour'])
+
 df.head()
 # %%
 heatmap_data = np.zeros((7, 24))
@@ -43,5 +48,9 @@ ax.invert_yaxis()
 
 ax.set_title(f"Swipes per Hour from {df.iloc[0].date.strftime('%m/%d/%Y')} to {df.iloc[-1].date.strftime('%m/%d/%Y')}")
 
-plt.savefig("logs/swipes.pdf")
+plt.savefig("logs/hourly.pdf")
+# %%
+plt.rcParams.update({'font.size': 12})
+calplot.calplot(df['day-without-hour'].value_counts(), cmap="Blues",)
+plt.savefig("logs/daily.pdf")
 # %%
