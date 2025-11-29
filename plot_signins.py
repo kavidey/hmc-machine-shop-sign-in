@@ -40,9 +40,9 @@ fig, ax = plt.subplots(figsize=(15, 10))
 cmap = ax.imshow(heatmap_data.T, aspect='auto', cmap="Blues")
 fig.colorbar(cmap, ax=ax, label="Swipes per Hour")
 ax.set_xticks(np.arange(0,7), xlabel)
-ax.set_yticks(np.arange(0,24), ylabel)
+ax.set_yticks(np.arange(0,24)-0.5, ylabel)
 
-ax.set_ylim(6, 24)
+ax.set_ylim(5.5, 23.5)
 ax.invert_yaxis()
 # ax.legend()
 
